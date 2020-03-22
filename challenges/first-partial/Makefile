@@ -25,4 +25,4 @@
 #        $(foreach exec,$(EXECUTABLES),\
 #         $(if $(shell which $(exec)),,$(error "There's no '$(exec)' binary in your PATH")))
 
-include ../common.mk
+include ../../common.mk

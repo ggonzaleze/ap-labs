@@ -1,39 +1,46 @@
 #include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 /* filecopy:  copy file ifp to file ofp */
-void filecopy(FILE *ifp, FILE *ofp)
+void filecopy(int ifp, int ofp)
 {
-    int c;
-
-    while ((c = getc(ifp)) != EOF)
-        putc(c, ofp);
-
+    if(ifp == 0){
+        char data[1];
+	while(read(ifp,data,1) != '\0'){
+		write(ofp,data,1);
+	}
+    }else{
+	int size = lseek(ifp, 0, SEEK_END);
+	lseek(ifp,0,SEEK_SET);
+	char data[size+1];
+	if(read(ifp,data,size) < 0)
+		write(1, "An error occurred in the read.\n", 31);
+	data[size+1] = '\0';
+	if(write(ofp,data,size) != size)
+		write(1, "There was an error writing to standard out\n", 44);
+    }
 }
 
 /* cat:  concatenate files, version 2 */
 int main(int argc, char *argv[])
 {
-    FILE *fp;
-    void filecopy(FILE *, FILE *);
+    int fp;
+    void filecopy(int, int);
     char *prog = argv[0];   /* program name for errors */
 
     if (argc == 1)  /* no args; copy standard input */
-        filecopy(stdin, stdout);
+        filecopy(0, 1);
     else
         while (--argc > 0)
-            if ((fp = fopen(*++argv, "r")) == NULL) {
-                fprintf(stderr, "%s: can′t open %s\n",
+            if ((fp = open(*++argv, O_RDONLY)) < 0) {
+                printf("%s: can′t open %s\n",
 			prog, *argv);
                 return 1;
             } else {
-                filecopy(fp, stdout);
-                fclose(fp);
+                filecopy(fp, 1);
+                close(fp);
             }
-
-    if (ferror(stdout)) {
-        fprintf(stderr, "%s: error writing stdout\n", prog);
-        return 2;
-    }
 
     return 0;
 }

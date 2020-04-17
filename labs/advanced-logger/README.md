@@ -1,6 +1,17 @@
 Lab  - Advanced Logger
 ======================
 
+Build and run
+--------------------
+
+```
+gcc -c logger.c -o logger.o
+gcc -c testLogger.c -o testLogger.o
+gcc logger.o testLogger.o -o main.o
+./main.o
+```
+
+
 Now it's time to add support for Linux system logging into your logger that you implemented on [logger](https://github.com/CodersSquad/ap-labs/tree/master/labs/logger).
 
 A new `initLogger`function will be added in order to add support for choosing between `stdout` or `syslog` logging.

@@ -5,22 +5,40 @@ import (
 	"io"
 	"log"
 	"net"
+	"math/rand"
 	"time"
+	"strconv"
+	"os"
 )
 
+var randomHour string
+var timezone string
+
 func handleConn(c net.Conn) {
+	timezone = os.Getenv("TZ")
+	rand.Seed(time.Now().UnixNano())
+	randomHour = strconv.Itoa(rand.Intn(12 - 0) + 0)
 	defer c.Close()
 	for {
-		_, err := io.WriteString(c, time.Now().Format("15:04:05\n"))
+		_, err := io.WriteString(c, timezone+" :\t\t\t"+ randomTimestamp()+"\n")
 		if err != nil {
 			return // e.g., client disconnected
 		}
-		time.Sleep(1 * time.Second)
+	time.Sleep(1 * time.Second)
 	}
 }
 
+func randomTimestamp() string {
+	t := time.Now()
+   	m :=  strconv.Itoa(t.Minute())
+   	s :=  strconv.Itoa(t.Second())
+	time := randomHour+":"+m+":"+s
+	return time
+}
+
 func main() {
-	listener, err := net.Listen("tcp", "localhost:9090")
+	port := os.Args[2]
+	listener, err := net.Listen("tcp", "localhost:"+port)
 	if err != nil {
 		log.Fatal(err)
 	}

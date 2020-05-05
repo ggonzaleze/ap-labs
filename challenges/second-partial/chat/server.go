@@ -208,7 +208,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("irc-server > Simple IRC Server started at localhost:9000")
+	fmt.Println("irc-server > Simple IRC Server started at localhost:"+port)
 	go broadcaster()
 	fmt.Println("irc-server > Ready for receiving new clients")
 	for {

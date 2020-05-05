@@ -11,14 +11,21 @@ import (
 	"log"
 	"net"
 	"os"
+	"fmt"
 )
 
 //!+
 func main() {
-	conn, err := net.Dial("tcp", "localhost:8000")
+	args := os.Args
+	user := args[2]
+	//fmt.Println("irc-server > Welcome to the Simple IRC Server")
+	server := args[4]
+	conn, err := net.Dial("tcp", server)
 	if err != nil {
 		log.Fatal(err)
 	}
+	//fmt.Println("irc-server > Your user "+user+" is successfully logged")
+	fmt.Fprintf(conn,user+"\000")
 	done := make(chan struct{})
 	go func() {
 		io.Copy(os.Stdout, conn) // NOTE: ignoring errors

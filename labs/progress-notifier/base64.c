@@ -20,6 +20,10 @@ Encoder and Decoder functions reference
 *    Title: Decode an Encoded Base 64 String to ASCII String
 *    Author: GeeksforGeeks
 *    Availability: https://www.geeksforgeeks.org/decode-encoded-base-64-string-ascii-string/
+Delay function reference
+*    Title: Time delay in C
+*    Author: GeeksforGeeks
+*    Availability: https://www.geeksforgeeks.org/time-delay-c/
 *******************************************************************************************/
 
 int size;

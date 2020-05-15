@@ -1,2 +1,10 @@
+all:
+	gcc -c logger.c -o logger.o
+	gcc -c base64.c -o base.o
+	gcc logger.o base.o -o base64
+clean:
+	rm logger.o
+	rm base.o
+	rm base64
 
 include ../../common.mk

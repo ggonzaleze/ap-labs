@@ -16,9 +16,13 @@ import (
 	"fmt"
 	"log"
 	"os"
-
+	"strings"
+	"strconv"
 	"gopl.io/ch5/links"
 )
+
+var times = -1;
+var limit = 0;
 
 //!+sema
 // tokens is a counting semaphore used to
@@ -26,6 +30,9 @@ import (
 var tokens = make(chan struct{}, 20)
 
 func crawl(url string) []string {
+	if times > limit {
+        	return nil
+        }
 	fmt.Println(url)
 	tokens <- struct{}{} // acquire a token
 	list, err := links.Extract(url)
@@ -41,16 +48,19 @@ func crawl(url string) []string {
 
 //!+
 func main() {
+	arg := os.Args[1]
+	limit,_ = strconv.Atoi(arg[strings.IndexByte(arg, '=')+1:])
 	worklist := make(chan []string)
 	var n int // number of pending sends to worklist
 
 	// Start with the command-line arguments.
 	n++
-	go func() { worklist <- os.Args[1:] }()
+	go func() { worklist <- os.Args[2:] }()
 
 	// Crawl the web concurrently.
 	seen := make(map[string]bool)
 	for ; n > 0; n-- {
+		times++;
 		list := <-worklist
 		for _, link := range list {
 			if !seen[link] {
